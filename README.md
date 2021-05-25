@@ -21,9 +21,9 @@ Type these commands in a terminal:
 git clone https://github.com/TorchedSammy/Tensho
 cd Tensho
 go get -d
-go build
+make build
+sudo make install
 ```  
-And Tensho will be compiled, at which you can copy/move to any bin directory.
 
 # Usage
 > ⚠️ Tensho has only been tested on Linux (and is really the only intended platform),
