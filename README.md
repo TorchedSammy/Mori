@@ -36,12 +36,12 @@ Simply run `mori &`, which will spawn Mori as a background job in your shell.
 It'll log any files that were moved.
 
 ## Configuration
-Mori uses a JSON config, located in `$HOME/.config/mori/mori.json`.
+Mori uses a JSON config, located in `~/.config/mori/mori.json`.
 It does not create this default config, but as a reference it looks like:  
 ```json
 {
-	"osuDir": "$HOME/.local/share/osu-wine/OSU",
-	"sourceDir": "$HOME/Downloads"
+	"osuDir": "~/.local/share/osu-wine/OSU",
+	"sourceDir": "~/Downloads"
 }
 ```
 > `$HOME` in this case needs to be replaced with your real home directory.
