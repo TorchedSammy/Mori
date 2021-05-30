@@ -10,14 +10,14 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-type MoriConfig struct {
+type Mori struct {
 	OsuDir string `json:"osuDir"`
 	SourceDir string `json:"sourceDir"`
 }
 
 func main() {
 	conffile, _ := os.ReadFile(os.Getenv("HOME") + "/.config/mori/mori.json")
-	conf := MoriConfig{
+	conf := Mori{
 		OsuDir: os.Getenv("HOME") + "/.local/share/osu-wine/OSU",
 		SourceDir: os.Getenv("HOME") + "/Downloads",
 	}
@@ -28,6 +28,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	defer watcher.Close()
+
+	conf.Sweep()
 
 	done := make(chan bool)
 	go func() {
@@ -54,23 +56,24 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	go handlesig()
+	fmt.Println("Mori has started up!")
 	<-done
 }
 
-func (c *MoriConfig) Copy(filename string) {
+func (m *Mori) Copy(filename string) {
 	dir := ""
 	switch filename[len(filename) - 4:] {
 	case ".osz":
-		dir = filepath.Join(c.OsuDir, "Songs")
+		dir = filepath.Join(m.OsuDir, "Songs")
 	case ".osk":
-		dir = filepath.Join(c.OsuDir, "Skins")
+		dir = filepath.Join(m.OsuDir, "Skins")
 	default:
 		return
 	}
 
 	beatmapname := filepath.Base(filename)
 	dest := filepath.Join(dir, beatmapname)
-	fmt.Printf("Moving %s to osu! song directory to %s\n", filename, dest)
+	fmt.Printf("Moving %s to %s\n", filename, dest)
 	os.Rename(filename, dest)
 }
 
@@ -79,6 +82,21 @@ func handlesig() {
 	signal.Notify(c, os.Interrupt)
 
 	for range c {
+		fmt.Println("")
 		os.Exit(0)
 	}
 }
+
+func (m *Mori) Sweep() {
+	fmt.Println("Beginning sweep of left archives...")
+	bmps, _ := filepath.Glob(m.SourceDir + "/*.osz")
+	skins, _ := filepath.Glob(m.SourceDir + "/*.osk")
+
+	for _, skin := range skins {
+		m.Copy(skin)
+	}
+	for _, beatmap := range bmps {
+		m.Copy(beatmap)
+	}
+}
+
