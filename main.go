@@ -10,14 +10,14 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-type TenshoConfig struct {
+type MoriConfig struct {
 	OsuDir string `json:"osuDir"`
 	SourceDir string `json:"sourceDir"`
 }
 
 func main() {
-	conffile, _ := os.ReadFile(os.Getenv("HOME") + "/.config/tensho/tensho.json")
-	conf := TenshoConfig{
+	conffile, _ := os.ReadFile(os.Getenv("HOME") + "/.config/mori/mori.json")
+	conf := MoriConfig{
 		OsuDir: os.Getenv("HOME") + "/.local/share/osu-wine/OSU",
 		SourceDir: os.Getenv("HOME") + "/Downloads",
 	}
@@ -57,7 +57,7 @@ func main() {
 	<-done
 }
 
-func (c *TenshoConfig) Copy(filename string) {
+func (c *MoriConfig) Copy(filename string) {
 	dir := ""
 	switch filename[len(filename) - 4:] {
 	case ".osz":

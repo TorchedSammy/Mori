@@ -1,4 +1,4 @@
-module tensho
+module mori
 
 go 1.16
 
