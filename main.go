@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -16,12 +17,15 @@ type Mori struct {
 }
 
 func main() {
+	homedir, _ := os.UserHomeDir()
 	conffile, _ := os.ReadFile(os.Getenv("HOME") + "/.config/mori/mori.json")
 	conf := Mori{
-		OsuDir: os.Getenv("HOME") + "/.local/share/osu-wine/OSU",
-		SourceDir: os.Getenv("HOME") + "/Downloads",
+		OsuDir: "~/.local/share/osu-wine/OSU",
+		SourceDir: "~/Downloads",
 	}
 	json.Unmarshal(conffile, &conf)
+	conf.OsuDir = strings.Replace(conf.OsuDir, "~", homedir, 1)
+	conf.SourceDir = strings.Replace(conf.SourceDir, "~", homedir, 1)
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {

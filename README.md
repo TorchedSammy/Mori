@@ -44,8 +44,6 @@ It does not create this default config, but as a reference it looks like:
 	"sourceDir": "~/Downloads"
 }
 ```
-> `$HOME` in this case needs to be replaced with your real home directory.
-
 `sourceDir` is where Mori will watch, and copy from.  
 `osuDir` is the osu! data directory, where all the files are.
 
