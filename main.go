@@ -18,7 +18,7 @@ type Mori struct {
 
 func main() {
 	homedir, _ := os.UserHomeDir()
-	conffile, _ := os.ReadFile(os.Getenv("HOME") + "/.config/mori/mori.json")
+	conffile, _ := os.ReadFile("~/.config/mori/mori.json")
 	conf := Mori{
 		OsuDir: "~/.local/share/osu-wine/OSU",
 		SourceDir: "~/Downloads",
