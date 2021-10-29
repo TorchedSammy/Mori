@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -35,7 +36,19 @@ func main() {
 
 	conf.Sweep()
 
+	interval := time.Duration(5) * time.Minute
+	ticker := time.NewTicker(interval)
 	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				conf.Sweep()
+			}
+		}
+	}()
+
 	go func() {
 		for {
 			select {
