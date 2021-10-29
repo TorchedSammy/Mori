@@ -43,7 +43,7 @@ func main() {
 				if !ok {
 					return
 				}
-				if event.Op&fsnotify.Chmod == fsnotify.Chmod {
+				if event.Op & fsnotify.Chmod == fsnotify.Chmod {
 						conf.Copy(event.Name)
 				}
 			case err, ok := <-watcher.Errors:
@@ -58,6 +58,7 @@ func main() {
 	err = watcher.Add(conf.SourceDir)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 	go handlesig()
 	fmt.Println("Mori has started up!")
