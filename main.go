@@ -15,6 +15,8 @@ import (
 type Mori struct {
 	OsuDir string `json:"osuDir"`
 	SourceDir string `json:"sourceDir"`
+	SweepTime string `json:"sweepTime"`
+	sweepDuration time.Duration
 }
 
 func main() {
@@ -23,10 +25,12 @@ func main() {
 	conf := Mori{
 		OsuDir: "~/.local/share/osu-wine/OSU",
 		SourceDir: "~/Downloads",
+		SweepTime: "5m",
 	}
 	json.Unmarshal(conffile, &conf)
 	conf.OsuDir = strings.Replace(conf.OsuDir, "~", homedir, 1)
 	conf.SourceDir = strings.Replace(conf.SourceDir, "~", homedir, 1)
+	sweepDuration, _ := time.ParseDuration(conf.SweepTime)
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -36,7 +40,7 @@ func main() {
 
 	conf.Sweep()
 
-	interval := time.Duration(5) * time.Minute
+	interval := sweepDuration
 	ticker := time.NewTicker(interval)
 	done := make(chan bool)
 
