@@ -40,7 +40,11 @@ func main() {
 	json.Unmarshal(conffile, &conf)
 	conf.OsuDir = strings.Replace(conf.OsuDir, "~", homedir, 1)
 	conf.SourceDir = strings.Replace(conf.SourceDir, "~", homedir, 1)
-	sweepDuration, _ := time.ParseDuration(conf.SweepTime)
+	sweepDuration, err := time.ParseDuration(conf.SweepTime)
+	if err != nil {
+		fmt.Println("Could not parse sweep time, `" + conf.SweepTime + "` is invalid")
+		os.Exit(1)
+	}
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
