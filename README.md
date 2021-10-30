@@ -41,11 +41,15 @@ It does not create this default config, but as a reference it looks like:
 ```json
 {
 	"osuDir": "~/.local/share/osu-wine/OSU",
-	"sourceDir": "~/Downloads"
+	"sourceDir": "~/Downloads",
+	"sweepTime": "5m",
+	"autoExtract": true
 }
 ```
 `sourceDir` is where Mori will watch, and copy from.  
-`osuDir` is the osu! data directory, where all the files are.
+`osuDir` is the osu! data directory, where all the files are.  
+`sweepTime` is the interval of when Mori will sweep the source directory for archives.  
+`autoExtract` defines whether Mori will automatically extract skins.
 
 ## Detection
 Mori detects "new" osu! archives by watching the configured directory to see if
