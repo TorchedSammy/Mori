@@ -106,7 +106,7 @@ func (m *Mori) Copy(filename string) {
 		dir = filepath.Join(m.OsuDir, "Songs")
 	case ".osk":
 		dir = filepath.Join(m.OsuDir, "Skins")
-		err := unzip(filename)
+		err := extract(filename)
 		if err != nil {
 			fmt.Println("error trying to extract skin: ", err)
 			return
@@ -146,7 +146,7 @@ func (m *Mori) Sweep() {
 	}
 }
 
-func unzip(src string) error {
+func extract(src string) error {
 	dest := strings.TrimSuffix(src, ".osk")
 
 	r, err := zip.OpenReader(src)
