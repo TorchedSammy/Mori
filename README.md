@@ -37,6 +37,7 @@ user service.
 
 ## Configuration
 Mori uses a JSON config, located in `~/.config/mori/mori.json`.
+If you want, you can change this to another location with the `-C` flag.
 It does not create this default config, but as a reference it looks like:  
 ```json
 {
