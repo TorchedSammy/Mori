@@ -19,7 +19,6 @@ type Mori struct {
 	OsuDir string `json:"osuDir"`
 	SourceDir string `json:"sourceDir"`
 	SweepTime string `json:"sweepTime"`
-	sweepDuration time.Duration
 }
 
 func main() {
