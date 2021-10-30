@@ -122,7 +122,7 @@ func (m *Mori) Copy(filename string) {
 
 	beatmapname := filepath.Base(filename)
 	dest := filepath.Join(dir, beatmapname)
-	fmt.Printf("Moving %s to %s\n", filename, dest)
+	fmt.Printf("Moving %s to %s\n", beatmapname, dest)
 	os.Rename(filename, dest)
 }
 
