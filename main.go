@@ -45,6 +45,7 @@ func main() {
 	done := make(chan bool)
 
 	go func() {
+		fmt.Println("Sweeping every", sweepDuration)
 		for {
 			select {
 			case <-ticker.C:
