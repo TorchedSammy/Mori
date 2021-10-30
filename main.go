@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/pborman/getopt"
 )
 
 type Mori struct {
@@ -20,8 +21,17 @@ type Mori struct {
 }
 
 func main() {
+	helpflag := getopt.BoolLong("help", 'h', "Prints Mori flags (this message)")
+	confPath := getopt.StringLong("config", 'C', "~/.config/mori/mori.json", "")
+	getopt.Parse()
+
+	if *helpflag {
+		getopt.PrintUsage(os.Stdout)
+		os.Exit(0)
+	}
+
 	homedir, _ := os.UserHomeDir()
-	conffile, _ := os.ReadFile("~/.config/mori/mori.json")
+	conffile, _ := os.ReadFile(*confPath)
 	conf := Mori{
 		OsuDir: "~/.local/share/osu-wine/OSU",
 		SourceDir: "~/Downloads",
