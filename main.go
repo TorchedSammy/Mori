@@ -111,6 +111,7 @@ func (m *Mori) Copy(filename string) {
 			fmt.Println("error trying to extract skin: ", err)
 			return
 		}
+		os.Remove(filename) // delete skin file after extraction
 		filename = strings.TrimSuffix(filename, ".osk")
 	default:
 		return
