@@ -19,6 +19,7 @@ type Mori struct {
 	OsuDir string `json:"osuDir"`
 	SourceDir string `json:"sourceDir"`
 	SweepTime string `json:"sweepTime"`
+	AutoExtract bool `json:"autoExtract"`
 }
 
 func main() {
@@ -37,6 +38,7 @@ func main() {
 		OsuDir: "~/.local/share/osu-wine/OSU",
 		SourceDir: "~/Downloads",
 		SweepTime: "5m",
+		AutoExtract: true,
 	}
 	json.Unmarshal(conffile, &conf)
 	conf.OsuDir = strings.Replace(conf.OsuDir, "~", homedir, 1)
@@ -105,13 +107,15 @@ func (m *Mori) Copy(filename string) {
 		dir = filepath.Join(m.OsuDir, "Songs")
 	case ".osk":
 		dir = filepath.Join(m.OsuDir, "Skins")
-		err := extract(filename)
-		if err != nil {
-			fmt.Println("error trying to extract skin: ", err)
-			return
+		if m.AutoExtract {
+			err := extract(filename)
+			if err != nil {
+				fmt.Println("error trying to extract skin: ", err)
+				return
+			}
+			os.Remove(filename) // delete skin file after extraction
+			filename = strings.TrimSuffix(filename, ".osk")
 		}
-		os.Remove(filename) // delete skin file after extraction
-		filename = strings.TrimSuffix(filename, ".osk")
 	default:
 		return
 	}
