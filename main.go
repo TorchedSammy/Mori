@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"path/filepath"
 	"os"
 	"os/signal"
 	"strings"
 	"time"
+	"archive/zip"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/pborman/getopt"
@@ -104,6 +106,12 @@ func (m *Mori) Copy(filename string) {
 		dir = filepath.Join(m.OsuDir, "Songs")
 	case ".osk":
 		dir = filepath.Join(m.OsuDir, "Skins")
+		err := unzip(filename)
+		if err != nil {
+			fmt.Println("error trying to extract skin: ", err)
+			return
+		}
+		filename = strings.TrimSuffix(filename, ".osk")
 	default:
 		return
 	}
@@ -137,3 +145,45 @@ func (m *Mori) Sweep() {
 	}
 }
 
+func unzip(src string) error {
+	dest := strings.TrimSuffix(src, ".osk")
+
+	r, err := zip.OpenReader(src)
+	if err != nil {
+		return err
+	}
+    defer r.Close()
+
+	for _, file := range r.File {
+		fPath := filepath.Join(dest, file.Name)
+
+		if file.FileInfo().IsDir() {
+			os.MkdirAll(fPath, os.ModePerm)
+			continue
+		}
+
+		if err = os.MkdirAll(filepath.Dir(fPath), os.ModePerm); err != nil {
+			return err
+		}
+
+		output, err := os.OpenFile(fPath, os.O_WRONLY | os.O_CREATE | os.O_TRUNC, file.Mode())
+		if err != nil {
+			return err
+		}
+
+		cont, err := file.Open()
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(output, cont)
+		cont.Close()
+		output.Close()
+
+		if err != nil {
+			return err
+		}
+    }
+
+    return nil
+}
