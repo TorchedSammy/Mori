@@ -55,8 +55,9 @@ func main() {
 	}
 	defer watcher.Close()
 
-	conf.Sweep()
+	fmt.Println("Sourcing archives from", conf.SourceDir)
 
+	conf.Sweep()
 	interval := sweepDuration
 	ticker := time.NewTicker(interval)
 	done := make(chan bool)
