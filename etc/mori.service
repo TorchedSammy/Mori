@@ -1,0 +1,9 @@
+[Unit]
+Description=Automatically put osu! related archives in their places.
+
+[Service]
+Type=simple
+ExecStart=mori
+
+[Install]
+WantedBy=default.target
