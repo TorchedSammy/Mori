@@ -1,4 +1,4 @@
-module mori
+module github.com/TorchedSammy/mori
 
 go 1.16
 
