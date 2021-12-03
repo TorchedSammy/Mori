@@ -3,7 +3,7 @@ DESTDIR ?=
 BINDIR ?= $(PREFIX)/bin
 
 build:
-	@go build -ldflags "-s -w"
+	@go build -ldflags "-s -w" -o mori
 
 install:
 	@install -v -d "$(DESTDIR)$(BINDIR)/" && install -m 0755 -v mori "$(DESTDIR)$(BINDIR)/mori"
