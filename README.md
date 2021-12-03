@@ -14,7 +14,8 @@ downloaded osu! beatmaps into osu!'s song directory, and skins in the skins
 directory. Then to import, just press F5 in beatmaps list. Or when you go back to it,
 it'll import.
 
-# Installation
+# Install
+If you want, you can manually compile Mori with the steps below.
 Getting Mori is pretty easy. All you need is [Go](https://go.dev) downloaded
 (and git, yknow).
 
@@ -23,8 +24,8 @@ Type these commands in a terminal:
 git clone https://github.com/TorchedSammy/Mori
 cd Mori
 go get -d
-make build
-sudo make install
+go build -ldflags "-s -w" -o mori
+sudo cp mori /usr/local/bin/ # install globally (chose a different path if you want)
 ```  
 
 # Usage
