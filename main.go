@@ -79,7 +79,7 @@ func main() {
 				if !ok {
 					return
 				}
-				if event.Op & fsnotify.Chmod == fsnotify.Chmod {
+				if event.Op & fsnotify.Chmod != fsnotify.Remove {
 						conf.Copy(event.Name)
 				}
 			case err, ok := <-watcher.Errors:
