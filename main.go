@@ -1,15 +1,16 @@
 package main
 
 import (
+	"archive/zip"
 	"encoding/json"
 	"fmt"
 	"io"
-	"path/filepath"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
-	"archive/zip"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/pborman/getopt"
@@ -24,8 +25,23 @@ type Mori struct {
 }
 
 func main() {
+	userconf, err := os.UserConfigDir()
+	if err != nil {
+		fmt.Println("Error getting user config dir: ", err)
+		os.Exit(1)
+	}
+	defaultConf := filepath.Join(userconf, "Mori", "mori.json")
+	defaultOsuDir := ""
+	switch runtime.GOOS {
+	case "windows":
+		defaultOsuDir = filepath.Join(userconf, "osu!")
+	case "darwin":
+		defaultOsuDir = filepath.Join(os.Getenv("HOME"), "Library", "Application Support", "osu!")
+	default:
+		defaultOsuDir = "~/.local/share/osu-wine/OSU"
+	}
 	helpflag := getopt.BoolLong("help", 'h', "Prints Mori flags (this message)")
-	confPath := getopt.StringLong("config", 'C', "~/.config/mori/mori.json", "")
+	confPath := getopt.StringLong("config", 'C', defaultConf, "")
 	getopt.Parse()
 
 	if *helpflag {
@@ -36,7 +52,7 @@ func main() {
 	homedir, _ := os.UserHomeDir()
 	conffile, _ := os.ReadFile(*confPath)
 	conf := Mori{
-		OsuDir: "~/.local/share/osu-wine/OSU",
+		OsuDir: defaultOsuDir,
 		SourceDir: "~/Downloads",
 		SweepTime: "5m",
 		AutoExtract: true,
