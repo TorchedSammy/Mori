@@ -20,6 +20,7 @@ type Mori struct {
 	SourceDir string `json:"sourceDir"`
 	SweepTime string `json:"sweepTime"`
 	AutoExtract bool `json:"autoExtract"`
+	FileEvents []string `json:"fileEvents"`
 }
 
 func main() {
@@ -39,6 +40,7 @@ func main() {
 		SourceDir: "~/Downloads",
 		SweepTime: "5m",
 		AutoExtract: true,
+		FileEvents: []string{"chmod", "rename"},
 	}
 	json.Unmarshal(conffile, &conf)
 	conf.OsuDir = strings.Replace(conf.OsuDir, "~", homedir, 1)
@@ -79,8 +81,10 @@ func main() {
 				if !ok {
 					return
 				}
-				if event.Op & fsnotify.Chmod != fsnotify.Remove {
+				for _, eventType := range conf.FileEvents {
+					if event.Op.String() == eventType {
 						conf.Copy(event.Name)
+					}
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
