@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
+	"github.com/rjeczalik/notify"
 	"github.com/pborman/getopt"
 )
 
@@ -56,7 +56,7 @@ func main() {
 		SourceDir: "~/Downloads",
 		SweepTime: "5m",
 		AutoExtract: true,
-		FileEvents: []string{"chmod", "rename"},
+		FileEvents: []string{"create"},
 	}
 	json.Unmarshal(conffile, &conf)
 	conf.OsuDir = strings.Replace(conf.OsuDir, "~", homedir, 1)
@@ -67,12 +67,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-	defer watcher.Close()
-
+	watcherChan := make(chan notify.EventInfo)
 	fmt.Println("Sourcing archives from", conf.SourceDir)
 
 	conf.Sweep()
@@ -93,29 +88,24 @@ func main() {
 	go func() {
 		for {
 			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				}
+			case ev := <-watcherChan:
 				for _, eventType := range conf.FileEvents {
-					if strings.ToLower(event.Op.String()) == eventType {
-						conf.Copy(event.Name)
+					evname := strings.TrimPrefix(ev.Event().String(), "notify.")
+					if strings.ToLower(evname) == eventType {
+						conf.Copy(ev.Path())
 					}
 				}
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				fmt.Println("error:", err)
 			}
 		}
 	}()
 
-	err = watcher.Add(conf.SourceDir)
+	err = notify.Watch(conf.SourceDir, watcherChan, notify.Create, notify.Write, notify.Rename)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	defer notify.Stop(watcherChan)
+
 	go handlesig()
 	fmt.Println("Mori has started up!")
 	<-done
