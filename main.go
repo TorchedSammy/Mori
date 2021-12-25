@@ -98,7 +98,7 @@ func main() {
 					return
 				}
 				for _, eventType := range conf.FileEvents {
-					if event.Op.String() == eventType {
+					if strings.ToLower(event.Op.String()) == eventType {
 						conf.Copy(event.Name)
 					}
 				}
