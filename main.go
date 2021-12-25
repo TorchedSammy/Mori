@@ -41,7 +41,7 @@ func main() {
 		defaultOsuDir = "~/.local/share/osu-wine/OSU"
 	}
 	helpflag := getopt.BoolLong("help", 'h', "Prints Mori flags (this message)")
-	confPath := getopt.StringLong("config", 'C', defaultConf, "")
+	confPath := getopt.StringLong("config", 'C', defaultConf, "Path to configuration file")
 	getopt.Parse()
 
 	if *helpflag {
